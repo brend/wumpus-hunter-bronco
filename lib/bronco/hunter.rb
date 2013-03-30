@@ -1,5 +1,6 @@
 require 'bronco/states/exploration'
 require 'bronco/square'
+require 'bronco/facing'
 require 'set'
 
 class Hunter
