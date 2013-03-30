@@ -5,7 +5,7 @@ describe Exploration do
     h = double
     h.stub(:senses_glitter?).and_return(true)
     e = Exploration.new
-    e.advance(h).should eq('GRAB')
+    e.advance(h).should eq(:shoot)
   end
   
   it "climbs if agent has the gold and is on start" do
@@ -14,7 +14,7 @@ describe Exploration do
     h.stub(:has_gold?).and_return(true)
     h.stub(:on_start?).and_return(true)
     e = Exploration.new
-    e.advance(h).should eq('CLIMB')
+    e.advance(h).should eq(:shoot)
   end
   
   # it "returns to start if gold is found" do

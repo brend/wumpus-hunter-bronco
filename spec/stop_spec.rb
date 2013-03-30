@@ -42,9 +42,9 @@ describe Stop do
   end
   
   it "returns the sequence of actions" do
-    Stop.new(nil, nil, nil, nil, 'FORWARD', 
-      [Stop.new(nil, nil, nil, nil, 'TURN'), 
-       Stop.new(nil, nil, nil, nil, 'FORWARD')]).sequence.should eq(['TURN', 'FORWARD', 'FORWARD'])
+    Stop.new(nil, nil, nil, nil, :forward, 
+      [Stop.new(nil, nil, nil, nil, :turn), 
+       Stop.new(nil, nil, nil, nil, :forward)]).sequence.should eq([:turn, :forward, :forward])
   end
   
   it "is finished iff on target" do

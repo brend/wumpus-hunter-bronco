@@ -44,7 +44,7 @@ describe Hunter do
   
   it "knows when it has bagged the gold" do
     h = Hunter.new
-    state = double(:advance => 'GRAB')
+    state = double(:advance => :shoot)
     h.state = state
     senses = double(:glitter => true, :stench => false, :breeze => false, :bump => false, :scream => false)
     h.has_gold?.should be_false
@@ -193,7 +193,7 @@ describe Hunter do
   
   it "should mark squares as unwalkable after bumping into a wall" do
     h = Hunter.new
-    h.last_action = 'FORWARD'
+    h.last_action = :forward
     h.state = double(:advance => nil)
     h.facing = Facing::UP
     senses = double(:glitter => false, :stench => false, :breeze => false, :bump => true, :scream => false)

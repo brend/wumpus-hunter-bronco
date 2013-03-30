@@ -29,9 +29,9 @@ class Hunter
     
     # TODO Walls here
     handle_movement(senses)
-    @facing = @facing.turn if @last_action == 'TURN'
+    @facing = @facing.turn if @last_action == :turn
     @senses_glitter = senses.glitter
-    @has_gold = @last_action == 'GRAB'
+    @has_gold = @last_action == :shoot
     @wumpus_killed = true if senses.scream
     
     detect_wumpus(senses)
@@ -41,7 +41,7 @@ class Hunter
   end
   
   def handle_movement(senses)
-    return unless last_action == 'FORWARD'
+    return unless last_action == :forward
     
     if senses.bump
       # Mark 'walls'

@@ -7,8 +7,8 @@ class Extermination
   
   # DEBUG
   module Action
-    TURN = "TURN"
-    SHOOT = "SHOOT"
+    TURN = :turn
+    SHOOT = :shoot
   end
   
   def advance(agent)

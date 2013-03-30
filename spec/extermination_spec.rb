@@ -44,7 +44,7 @@ describe Extermination do
     h.stub(:facing).and_return(Facing::UP)
     h.stub(:state=).and_return(nil)
     
-    e.advance(h).should eq('SHOOT')
+    e.advance(h).should eq(:shoot)
   end
   
   it "turns if wumpus is in the blind spot" do
@@ -56,7 +56,7 @@ describe Extermination do
     h.stub(:facing).and_return(Facing::LEFT)
     h.stub(:state=).and_return(nil)
     
-    e.advance(h).should eq('TURN')
+    e.advance(h).should eq(:turn)
     
   end
 end

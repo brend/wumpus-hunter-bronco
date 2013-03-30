@@ -27,7 +27,7 @@ describe Expedition do
       (x - 3).abs < 2 && (y - 3).abs < 2
     end
     
-    e.plot_path(h).should eq(['TURN', 'TURN', 'FORWARD'])
+    e.plot_path(h).should eq([:turn, :turn, :forward])
   end
   
   it "can plot complicated, but short paths" do
@@ -46,6 +46,6 @@ describe Expedition do
     h.stub!(:facing) {f}
     h.stub!(:facing=) {|xf| f = xf}
     
-    e.plot_path(h).should eq(['TURN', 'TURN', 'TURN', 'FORWARD', 'TURN', 'TURN', 'TURN', 'FORWARD', 'FORWARD', 'FORWARD', 'TURN', 'FORWARD', 'FORWARD'])
+    e.plot_path(h).should eq([:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward])
   end
 end

@@ -15,9 +15,9 @@ class Stop
   
   def successors
     next_square = @facing.apply(@location)
-    succ = [Stop.new(@agent, @target, @location, @facing.turn, "TURN", path)]
+    succ = [Stop.new(@agent, @target, @location, @facing.turn, :turn, path)]
     if agent.walkable_square_location?(next_square) && !agent.dangerous_square?(next_square)
-      succ << Stop.new(@agent, @target, next_square, @facing, "FORWARD", path)
+      succ << Stop.new(@agent, @target, next_square, @facing, :forward, path)
     end
     succ
   end
