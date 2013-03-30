@@ -3,7 +3,7 @@ require 'bronco/square'
 require 'set'
 
 class Hunter
-  attr_accessor :state, :world, :location, :facing
+  attr_accessor :state, :world, :location, :facing, :last_action
   attr_reader :wumpus_location
   
   def initialize
@@ -27,7 +27,7 @@ class Hunter
     xs.visit
     
     # TODO Walls here
-    @location = @facing.apply(location) if @last_action == 'FORWARD' && !senses.bump
+    handle_movement(senses)
     @facing = @facing.turn if @last_action == 'TURN'
     @senses_glitter = senses.glitter
     @has_gold = @last_action == 'GRAB'
@@ -39,6 +39,17 @@ class Hunter
     @wumpus_can_be_killed = !@wumpus_killed && wumpus_location
   end
   
+  def handle_movement(senses)
+    return unless last_action == 'FORWARD'
+    
+    if senses.bump
+      # Mark 'walls'
+      wall = @facing.get_wall(location)
+      wall.each {|x, y| get_square(x, y).wall_up}
+    else
+      @location = @facing.apply(location)
+    end
+  end
   
   def detect_wumpus(senses)
     if senses.stench
@@ -96,8 +107,9 @@ class Hunter
     not visited_squares.include?(s)
   end
   
-  def walkable_square?(s)
-    s.walkable?
+  def walkable_square_location?(l)
+    s = get_square(*l)
+    s.walkable
   end
   
   def get_square(x, y)
@@ -111,22 +123,35 @@ class Hunter
   end
   
   def get_dangerous_square
-    0.upto(6) do |y|
-      0.upto(6) do |x|
-        return [x, y] if get_square(x, y).dangerous?
-      end
-    end
-    nil
+    # TODO: Sort by dangerousness, proximity to hunter
+    get_all_dangerous_squares.first
   end
   
-  def get_safe_square
+  def get_all_dangerous_squares
+    result = []
     0.upto(6) do |y|
       0.upto(6) do |x|
         s = get_square(x, y)
-        return [x, y] if s.safe? && !s.visited?
+        result << [x, y] if neighbors?(location, [x, y]) && s.dangerous? && s.walkable && !s.visited?
       end
     end
-    nil
+    result
+  end
+
+  def get_all_safe_squares
+    result = []
+    0.upto(6) do |y|
+      0.upto(6) do |x|
+        s = get_square(x, y)
+        result << [x, y] if neighbors?(location, [x, y]) && s.safe? && s.walkable && !s.visited?
+      end
+    end
+    result
+  end
+  
+  def get_safe_square
+    # TODO: Sort by proximity to hunter
+    get_all_safe_squares.first
   end
   
   def get_location(square)

@@ -19,28 +19,33 @@ describe Expedition do
     e.return_state = s
     e.advance(h)
   end
-  
-  # it "returns either TURN or FORWARD" do
-  #   e = Expedition.new([2, 1])
-  #   h = double
-  #   f = double
-  #   f.stub(:apply).and_return([1, 0])
-  #   f.stub(:turn).and_return(double)
-  #   h.stub(:location).and_return([0, 0])
-  #   h.stub(:facing).and_return(f)
-  #   h.stub(:dangerous_square?).and_return(false)
-  #   
-  #   a = e.advance(h)
-  #   ["TURN", "FORWARD"].should include(a)
-  # end
-  
+    
   it "plots a short path to its target" do
     e = Expedition.new([3, 2])
     h = double(:location => [3, 3], :facing => Facing::UP, :dangerous_square? => false)
-    h.stub!(:walkable_square?) do |x, y|
+    h.stub!(:walkable_square_location?) do |x, y|
       (x - 3).abs < 2 && (y - 3).abs < 2
     end
     
     e.plot_path(h).should eq(['TURN', 'TURN', 'FORWARD'])
+  end
+  
+  it "can plot complicated, but short paths" do
+    e = Expedition.new([0, 0])
+    h = double(:dangerous_square? => false)
+    
+    h.stub!(:walkable_square_location?) do |x, y|
+      unwalkables = [[1, 2], [1, 3], [1, 4], [3, 2], [4, 3]]
+      not unwalkables.include?([x, y])
+    end
+    
+    l = [3, 3]
+    f = Facing::UP
+    h.stub!(:location) {l}
+    h.stub!(:location=) {|xl| l = xl}
+    h.stub!(:facing) {f}
+    h.stub!(:facing=) {|xf| f = xf}
+    
+    e.plot_path(h).should eq(['TURN', 'TURN', 'TURN', 'FORWARD', 'TURN', 'TURN', 'TURN', 'FORWARD', 'FORWARD', 'FORWARD', 'TURN', 'FORWARD', 'FORWARD'])
   end
 end

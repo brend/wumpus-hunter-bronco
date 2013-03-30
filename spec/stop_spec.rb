@@ -9,6 +9,7 @@ describe Stop do
   it "turns and forwards" do
     h = double
     h.should_receive(:dangerous_square?).and_return(false)
+    h.should_receive(:walkable_square_location?).and_return(true)
     l = [1, 2]
     lf = double
     f = double
@@ -28,6 +29,7 @@ describe Stop do
     lf = double
     h = double
     h.should_receive(:dangerous_square?).with(lf).and_return(true)
+    h.should_receive(:walkable_square_location?).and_return(true)
     f = double
     ft = double
     f.stub(:turn).and_return(ft)

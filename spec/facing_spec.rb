@@ -28,4 +28,22 @@ describe Facing do
     Facing::DOWN.turn.should eq(Facing::LEFT)
     Facing::LEFT.turn.should eq(Facing::UP)
   end
+  
+  it "computes columns" do
+    t1 = Facing::UP.get_wall([3, 3])
+    
+    4.upto(6) do |y|
+      0.upto(6) do |x|
+        t1.should include [x, y]
+      end
+    end
+    
+    t2 = Facing::LEFT.get_wall([3, 3])
+    
+    0.upto(2) do |x|
+      0.upto(6) do |y|
+        t2.should include [x, y]
+      end
+    end
+  end
 end

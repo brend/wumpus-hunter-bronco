@@ -1,5 +1,5 @@
 require 'bronco/hunter'
-require 'ruby-debug'
+require 'bronco/facing'
 
 describe Hunter do
   it "knows that visited squares aren't dangerous" do
@@ -74,6 +74,8 @@ describe Hunter do
     h.make_move(senses)
     l = h.get_safe_square
     h.safe_square?(l).should be_true
+    h.get_square(*l).walkable.should be_true
+    h.get_square(*l).visited?.should be_false
   end  
   
   it "gets you a dangerous square" do
@@ -85,6 +87,45 @@ describe Hunter do
     l = h.get_dangerous_square
     l.should be_true
     h.dangerous_square?(l).should be_true
+    h.get_square(*l).walkable.should be_true
+    h.get_square(*l).visited?.should be_false
+  end
+  
+  it "gets you only walkable dangerous squares" do
+    h = Hunter.new
+    state = double(:advance => nil)
+    h.state = state
+    senses = double(:glitter => false, :stench => true, :breeze => false, :bump => false, :scream => false)
+    h.make_move(senses)
+    xs = h.get_all_dangerous_squares
+    Set.new(xs).should eq(Set.new([[3, 2], [3, 4], [2, 3], [4, 3]]))
+    h.get_square(3, 4).walkable = false
+    ys = h.get_all_dangerous_squares
+    Set.new(ys).should eq(Set.new([[3, 2], [2, 3], [4, 3]]))
+  end
+  
+  it "gets you only walkable safe squares" do
+    h = Hunter.new
+    state = double(:advance => nil)
+    h.state = state
+    senses = double(:glitter => false, :stench => false, :breeze => false, :bump => false, :scream => false)
+    h.make_move(senses)
+    xs = h.get_all_safe_squares
+    Set.new(xs).should eq(Set.new([[3, 2], [3, 4], [2, 3], [4, 3]]))
+    h.get_square(3, 4).walkable = false
+    ys = h.get_all_safe_squares
+    Set.new(ys).should eq(Set.new([[3, 2], [2, 3], [4, 3]]))
+  end
+  
+  it "knows that neighbors of clear squares are safe" do
+    h = Hunter.new
+    h.state = double(:advance => nil)
+    senses = double(:glitter => false, :stench => false, :breeze => false, :bump => false, :scream => false)
+    h.make_move(senses)
+    h.safe_square?([2, 3]).should be_true
+    h.safe_square?([4, 3]).should be_true
+    h.safe_square?([3, 2]).should be_true
+    h.safe_square?([3, 4]).should be_true
   end
   
   it "knows when the wumpus is dead" do
@@ -132,18 +173,34 @@ describe Hunter do
     h.make_move(senses)
   end
   
-  it "should return only unvisited safe squares" do
+  it "should return only unvisited, walkable safe squares" do
     h = Hunter.new
+    h.state = double(:advance =>false)
     senses = double(:glitter => false, :stench => false, :breeze => false, :bump => false, :scream => false)
-    
-    s = h.get_safe_square
-    s.nil?.should be_false
+    h.make_move(senses)
+    l = h.get_safe_square
+    l.nil?.should be_false
+    s = h.get_square(*l)
     s.visited?.should be_false
+    s.walkable.should be_true
   end
   
   it "knows a square's neighbors" do
     h = Hunter.new
     Set.new(h.get_neighbor_locations([3, 3])).should eq(Set.new([[2, 3], [4, 3], [3, 2], [3, 4]]))
     Set.new(h.get_neighbor_locations([0, 0])).should eq(Set.new([[1, 0], [0, 1]]))
+  end
+  
+  it "should mark squares as unwalkable after bumping into a wall" do
+    h = Hunter.new
+    h.last_action = 'FORWARD'
+    h.state = double(:advance => nil)
+    h.facing = Facing::UP
+    senses = double(:glitter => false, :stench => false, :breeze => false, :bump => true, :scream => false)
+    
+    h.make_move(senses)
+    
+    0.upto(6) {|i| h.get_square(i, 4).walkable.should be_false}
+    0.upto(6) {|i| h.get_square(i, 5).walkable.should be_false}
   end
 end

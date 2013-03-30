@@ -32,6 +32,27 @@ class Facing
     end
   end
   
+  def get_wall(l)
+    x, y = l
+    result = []
+    
+    if @ox == 0
+      yrange = (@oy > 0) ? (y + @oy .. 6) : (0 .. y + @oy)
+      yrange.each do |wy|
+        result += 0.upto(6).collect {|i| [i, wy]}
+      end
+    elsif @oy == 0
+      xrange = (@ox > 0) ? (x + @ox .. 6) : (0 .. x + @ox)
+      xrange.each do |wx|
+        result += 0.upto(6).collect {|i| [wx, i]}
+      end
+    else
+      raise Exception.new('Invalid facing')
+    end
+    
+    result
+  end
+  
   def inspect
     case self
     when UP

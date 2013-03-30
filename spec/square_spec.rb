@@ -59,4 +59,12 @@ describe Square do
     s.visit
     s.visited?.should be_true
   end
+  
+  it "can be properly walled up" do
+    s = Square.new
+    s.wall_up
+    s.wumpus.should eq(:no)
+    s.pit.should eq(:no)
+    s.walkable.should be_false
+  end
 end

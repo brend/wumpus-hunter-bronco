@@ -27,4 +27,9 @@ class Square
   def visited?
     @visited
   end
+  
+  def wall_up
+    @walkable = false
+    @pit = @wumpus = :no
+  end
 end
