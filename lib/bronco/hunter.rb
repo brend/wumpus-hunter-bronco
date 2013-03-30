@@ -61,20 +61,24 @@ class Hunter
           ys = get_square(x, y)
           ys.wumpus = :no
         end
-      end
-    
-      # Note: If a square has been visited, 
-      # "wumpus = :no" has already been executed.
-      possible_squares = @world.select {|s| s.wumpus == :maybe}
-    
-      if possible_squares.length == 1
-        possible_squares.first.wumpus = :yes
-        @wumpus_location = get_location(possible_squares.first)
-      end
+      end    
     else
       # Clear Wumpus possibility from the surrounding squares
       get_neighbor_locations(location).each {|x, y| get_square(x, y).wumpus = :no}
     end
+    
+    # Note: If a square has been visited, 
+    # "wumpus = :no" has already been executed.
+    possible_squares = @world.select {|s| s.wumpus == :maybe}
+  
+    if possible_squares.length == 1
+      possible_squares.first.wumpus = :yes
+      @wumpus_location = get_location(possible_squares.first)
+    end
+  end
+  
+  def wumpus_found?
+    not @wumpus_location.nil?
   end
   
   def neighbors?(location1, location2)

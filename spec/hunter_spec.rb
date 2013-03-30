@@ -128,6 +128,22 @@ describe Hunter do
     h.safe_square?([3, 4]).should be_true
   end
   
+  it "finds the wumpus" do
+    h = Hunter.new
+    h.state = double(:advance => nil)
+    h.wumpus_found?.should be_false
+    senses = double(:glitter => false, :stench => false, :breeze => false, :bump => false, :scream => false)
+    0.upto(6) do |y|
+      0.upto(6) do |x|
+        h.get_square(x, y).wumpus = [[0, 2], [1, 1]].include?([x, y]) ? :maybe : :no
+      end
+    end
+    h.get_square(0, 2).visit
+    h.detect_wumpus(senses)
+    h.wumpus_found?.should be_true
+    h.wumpus_location.should eq([1, 1])
+  end
+  
   it "knows when the wumpus is dead" do
     h = Hunter.new
     state = double(:advance => nil)
