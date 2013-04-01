@@ -37,8 +37,10 @@ class Expedition
       fringe.sort!.reverse!
       n = fringe.pop
       puts "Selecting #{n} for expansion"
-      puts "Target reached: #{n.path.inspect}" if n.finished?
-      return get_path_actions(n.path) if n.finished?
+      if n.finished?
+        puts "Target reached: #{get_path_actions(n.path)}" if n.finished?
+        return get_path_actions(n.path) if n.finished?
+      end
       visited << n
       n.successors.each {|s| fringe << s unless visited.include?(s)}
     end
@@ -47,6 +49,6 @@ class Expedition
   end
   
   def get_path_actions(path)
-    path.collect(&:action_taken).drop(1)
+    path.collect(&:action_taken).drop(1).reverse
   end
 end

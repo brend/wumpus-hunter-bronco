@@ -27,7 +27,7 @@ describe Expedition do
                :dangerous_square? => false,
                :visited_square_location? => true)
     
-    e.plot_path(h).should eq([:turn, :turn, :forward])
+    e.plot_path(h).should eq([:turn, :turn, :forward].reverse)
   end
   
   it "can plot complicated, but short paths" do
@@ -46,7 +46,7 @@ describe Expedition do
     h.stub!(:facing) {f}
     h.stub!(:facing=) {|xf| f = xf}
     
-    e.plot_path(h).should eq([:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward])
+    e.plot_path(h).should eq([:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward].reverse)
   end
   
   it "can find a path to an unvisited square" do
@@ -60,6 +60,6 @@ describe Expedition do
     h.stub!(:facing=) {|xf| f = xf}
     h.stub!(:visited_square_location?) {|l| l == [3, 3]}
 
-    e.plot_path(h).should eq [:turn, :turn, :forward]
+    e.plot_path(h).should eq [:turn, :turn, :forward].reverse
   end
 end
