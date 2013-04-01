@@ -219,4 +219,13 @@ describe Hunter do
     0.upto(6) {|i| h.get_square(i, 4).walkable.should be_false}
     0.upto(6) {|i| h.get_square(i, 5).walkable.should be_false}
   end
+  
+  it "knows if a square has been visited" do
+    h = Hunter.new
+    h.visited_square_location?([1, 2]).should be_false
+    h.visited_square_location?([2, 4]).should be_false
+    h.get_square(1, 2).visit
+    h.visited_square_location?([1, 2]).should be_true
+    h.visited_square_location?([2, 4]).should be_false
+  end
 end

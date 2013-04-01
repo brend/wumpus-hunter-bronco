@@ -7,9 +7,7 @@ describe Stop do
   end
   
   it "turns and forwards" do
-    h = double
-    h.should_receive(:dangerous_square?).and_return(false)
-    h.should_receive(:walkable_square_location?).and_return(true)
+    h = double(:visited_square_location? => true)
     l = [1, 2]
     lf = double
     f = double
@@ -24,21 +22,15 @@ describe Stop do
     succ.should include(Stop.new(nil, nil, lf, f))
   end
   
-  it "doesn't forward if dangerous" do
-    l = [1, 2]
-    lf = double
+  it "doesn't forward if unvisited" do
     h = double
-    h.should_receive(:dangerous_square?).with(lf).and_return(true)
-    h.should_receive(:walkable_square_location?).and_return(true)
-    f = double
-    ft = double
-    f.stub(:turn).and_return(ft)
-    f.stub(:apply).with(l).and_return(lf)
-    s = Stop.new(h, nil, l, f)
+    h.stub!(:visited_square_location?) {|x, y| x == 6 && y == 5}
+    t = [6, 5]
+    l = [1, 1]
+    f = Facing::UP
+    s = Stop.new(h, t, l, f)
     succ = s.successors
-    
     succ.length.should eq(1)
-    succ.should include(Stop.new(h, nil, l, ft))
   end
   
   it "returns the sequence of actions" do

@@ -15,7 +15,7 @@ class Expedition
     
     # puts "", "I have plotted a path: #{@path.inspect}"
     
-    raise Exception.new("Could not find path") if @path.nil? || @path.empty?
+    raise Exception.new("Computed empty path from #{agent.location.inspect} to #{target.inspect}") if @path.nil? || @path.empty?
     
     return @path.pop
   end
@@ -33,11 +33,11 @@ class Expedition
     visited = []
     
     until fringe.empty?
-      # puts "", "The fringe is: #{fringe.inspect}"
+      puts "", "The fringe is: #{fringe.inspect}"
       fringe.sort!.reverse!
       n = fringe.pop
-      # puts "Selecting #{n} for expansion"
-      # puts "Target reached: #{n.path.inspect}" if n.finished?
+      puts "Selecting #{n} for expansion"
+      puts "Target reached: #{n.path.inspect}" if n.finished?
       return get_path_actions(n.path) if n.finished?
       visited << n
       n.successors.each {|s| fringe << s unless visited.include?(s)}

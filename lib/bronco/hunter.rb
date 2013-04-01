@@ -183,6 +183,10 @@ class Hunter
     get_square(l.first, l.last).safe?
   end
   
+  def visited_square_location?(l)
+    get_square(*l).visited?
+  end
+  
   def dangerous_square?(l)
     get_square(l.first, l.last).dangerous?
   end

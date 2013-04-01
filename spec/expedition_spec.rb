@@ -22,10 +22,10 @@ describe Expedition do
     
   it "plots a short path to its target" do
     e = Expedition.new([3, 2])
-    h = double(:location => [3, 3], :facing => Facing::UP, :dangerous_square? => false)
-    h.stub!(:walkable_square_location?) do |x, y|
-      (x - 3).abs < 2 && (y - 3).abs < 2
-    end
+    h = double(:location => [3, 3], 
+               :facing => Facing::UP, 
+               :dangerous_square? => false,
+               :visited_square_location? => true)
     
     e.plot_path(h).should eq([:turn, :turn, :forward])
   end
@@ -34,7 +34,7 @@ describe Expedition do
     e = Expedition.new([0, 0])
     h = double(:dangerous_square? => false)
     
-    h.stub!(:walkable_square_location?) do |x, y|
+    h.stub!(:visited_square_location?) do |x, y|
       unwalkables = [[1, 2], [1, 3], [1, 4], [3, 2], [4, 3]]
       not unwalkables.include?([x, y])
     end
@@ -47,5 +47,19 @@ describe Expedition do
     h.stub!(:facing=) {|xf| f = xf}
     
     e.plot_path(h).should eq([:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward])
+  end
+  
+  it "can find a path to an unvisited square" do
+    e = Expedition.new([3, 2])
+    h = double(:walkable_square_location? => true)
+    l = [3, 3]
+    f = Facing::UP
+    h.stub!(:location) {l}
+    h.stub!(:location=) {|xl| l = xl}
+    h.stub!(:facing) {f}
+    h.stub!(:facing=) {|xf| f = xf}
+    h.stub!(:visited_square_location?) {|l| l == [3, 3]}
+
+    e.plot_path(h).should eq [:turn, :turn, :forward]
   end
 end
