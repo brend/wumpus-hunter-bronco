@@ -6,6 +6,11 @@ class Expedition
   def initialize(target)
     @target = target
     @path = nil
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger::DEBUG
+    @logger.formatter = proc do |severity, datetime, progname, msg|
+      "Expedition: #{msg}\n"
+    end
   end
   
   def advance(agent)
@@ -13,7 +18,10 @@ class Expedition
     
     @path = plot_path(agent) unless @path
     
-    # puts "", "I have plotted a path: #{@path.inspect}"
+    unless @path
+      @path = plot_path(agent)
+      @logger.debug("I have plotted a path: #{@path.inspect} (remember this is a stack, so action order is reversed)")
+    end
     
     raise Exception.new("Computed empty path from #{agent.location.inspect} to #{target.inspect}") if @path.nil? || @path.empty?
     
@@ -40,7 +48,7 @@ class Expedition
       n = fringe.pop
 #      puts "Selecting #{n} for expansion"
       if n.finished?
-        puts "Target can be reached with: #{get_path_actions(n.path)} (remember this is a stack, so action order is reversed)" if n.finished?
+#        puts "Target can be reached with: #{get_path_actions(n.path)} (remember this is a stack, so action order is reversed)" if n.finished?
         return get_path_actions(n.path) if n.finished?
       end
       visited << n
