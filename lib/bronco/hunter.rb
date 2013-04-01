@@ -86,7 +86,7 @@ class Hunter
   end
   
   def wumpus_found?
-    not @wumpus_location.nil?
+    !(@wumpus_location.nil? || @wumpus_killed)
   end
   
   def neighbors?(location1, location2)
@@ -175,6 +175,10 @@ class Hunter
     end
   end
   
+  def start_location
+    [3, 3]
+  end
+  
   def senses_glitter?
     @senses_glitter
   end
@@ -188,7 +192,7 @@ class Hunter
   end
   
   def on_start?
-    location == [3, 3]
+    location == start_location
   end
   
   def safe_square?(l)
