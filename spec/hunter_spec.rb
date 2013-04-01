@@ -44,7 +44,7 @@ describe Hunter do
   
   it "knows when it has bagged the gold" do
     h = Hunter.new
-    state = double(:advance => :shoot)
+    state = double(:advance => :grab)
     h.state = state
     senses = double(:glitter => true, :stench => false, :breeze => false, :bump => false, :scream => false)
     h.has_gold?.should be_false
