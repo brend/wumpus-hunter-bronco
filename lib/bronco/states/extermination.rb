@@ -1,28 +1,39 @@
-# require 'wumpus/action'
 require 'bronco/states/expedition'
 
 class Extermination
   attr_accessor :return_state
   
-  
-  # DEBUG
-  module Action
-    TURN = :turn
-    SHOOT = :shoot
+  def initialize
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger::DEBUG
+    @logger.formatter = proc do |severity, datetime, progname, msg|
+      "Extermination: #{msg}\n"
+    end
   end
   
   def advance(agent)
-    return transition(agent) if agent.wumpus_killed?
+    if agent.wumpus_killed?
+      @logger.debug("I am finished exterminating because the wumpus has been killed")
+      return transition(agent) 
+    end
     
     wlos = line_of_sight(agent.wumpus_location)
     
-    return walk_to_wumpus(agent, wlos) unless wlos.include?(agent.location)
+    unless wlos.include?(agent.location)
+      @logger.debug("I will walk into the Wumpus' line of sight")
+      return walk_to_wumpus(agent, wlos) 
+    end
     
-    return Action::TURN unless agent.facing == Facing.subtract(agent.wumpus_location, agent.location)
+    unless agent.facing == Facing.subtract(agent.wumpus_location, agent.location)
+      @logger.debug("I must turn to face the Wumpus")
+      return :turn
+    end
+    
+    @logger.debug("I will now fire my arrow")
     
     # ready to shoot
     agent.state = return_state
-    return Action::SHOOT
+    return :shoot
   end
   
   def transition(agent)
@@ -42,8 +53,13 @@ class Extermination
   end
   
   def walk_to_wumpus(agent, wlos)
+    @logger.debug("The Wumpus' line of sight is: #{wlos.inspect}")
     wlos.each do |location|
-      next unless agent.safe_square?(location)
+      next unless agent.valid_location?(location) &&
+                  agent.safe_square?(location) &&
+                  agent.walkable_square_location?(location)
+      
+      @logger.debug("I will expedition to the Wumpus LOS-square #{location.inspect}")
       
       e = Expedition.new(location)
       e.return_state = self
