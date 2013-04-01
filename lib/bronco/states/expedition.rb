@@ -9,7 +9,7 @@ class Expedition
   end
   
   def advance(agent)
-    return transition(agent) if agent.location == target
+    return transition(agent) if agent.location == target || agent.senses_bump?
     
     @path = plot_path(agent) unless @path
     
@@ -32,13 +32,15 @@ class Expedition
     fringe = [Stop.new(agent, target, location, facing)]
     visited = []
     
+    puts "", "I'ma goin to #{target.inspect}"
+    
     until fringe.empty?
       puts "", "The fringe is: #{fringe.inspect}"
       fringe.sort!.reverse!
       n = fringe.pop
       puts "Selecting #{n} for expansion"
       if n.finished?
-        puts "Target reached: #{get_path_actions(n.path)}" if n.finished?
+        puts "Target can be reached with: #{get_path_actions(n.path)} (remember this is a stack, so action order is reversed)" if n.finished?
         return get_path_actions(n.path) if n.finished?
       end
       visited << n

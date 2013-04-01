@@ -13,6 +13,7 @@ class Hunter
     @last_action = nil
     @location = [3, 3]
     @senses_glitter = false
+    @senses_bump = false
     @has_gold = false
     @wumpus_location = nil
     @facing = Facing::UP
@@ -31,6 +32,7 @@ class Hunter
     handle_movement(senses)
     @facing = @facing.turn if @last_action == :turn
     @senses_glitter = senses.glitter
+    @senses_bump = senses.bump
     @has_gold = @last_action == :shoot
     @wumpus_killed = true if senses.scream
     
@@ -169,6 +171,10 @@ class Hunter
   
   def senses_glitter?
     @senses_glitter
+  end
+  
+  def senses_bump?
+    @senses_bump
   end
   
   def has_gold?

@@ -49,6 +49,35 @@ describe Expedition do
     e.plot_path(h).should eq([:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward].reverse)
   end
   
+  it "cancels if the hunter bumps her head" do
+    e = Expedition.new([0, 0])
+    h = double(:dangerous_square? => false)
+    
+    h.stub!(:visited_square_location?) do |x, y|
+      unwalkables = [[1, 2], [1, 3], [1, 4], [3, 2], [4, 3]]
+      not unwalkables.include?([x, y])
+    end
+    
+    l = [3, 3]
+    f = Facing::UP
+    return_state = double(:advance => :state_has_changed)
+    h.stub!(:location) {l}
+    h.stub!(:location=) {|xl| l = xl}
+    h.stub!(:facing) {f}
+    h.stub!(:facing=) {|xf| f = xf}
+    h.should_receive(:state=).with(return_state)
+    h.stub(:senses_bump?).and_return(false, false, false, false, true)
+    
+    e.return_state = return_state
+    e.plot_path(h)
+    # The path should be [:turn, :turn, :turn, :forward, :turn, :turn, :turn, :forward, :forward, :forward, :turn, :forward, :forward].reverse, see above
+    e.advance(h).should eq :turn
+    e.advance(h).should eq :turn
+    e.advance(h).should eq :turn
+    e.advance(h).should eq :forward
+    e.advance(h).should eq :state_has_changed
+  end
+  
   it "can find a path to an unvisited square" do
     e = Expedition.new([3, 2])
     h = double(:walkable_square_location? => true)
