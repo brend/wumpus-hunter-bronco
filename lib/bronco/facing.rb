@@ -41,9 +41,17 @@ class Facing
       yrange.each do |wy|
         result += 0.upto(6).collect {|i| [i, wy]}
       end
+      yrange2 = (@oy > 0) ? (0 .. y - 4) : (y + 4 .. 6)
+      yrange2.each do |wy|
+        result += 0.upto(6).collect {|i| [i, wy]}
+      end
     elsif @oy == 0
       xrange = (@ox > 0) ? (x + @ox .. 6) : (0 .. x + @ox)
       xrange.each do |wx|
+        result += 0.upto(6).collect {|i| [wx, i]}
+      end
+      xrange2 = (@ox > 0) ? (0 .. x - 4) : (x + 4 .. 6)
+      xrange2.each do |wx|
         result += 0.upto(6).collect {|i| [wx, i]}
       end
     else

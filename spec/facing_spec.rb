@@ -29,14 +29,18 @@ describe Facing do
     Facing::LEFT.turn.should eq(Facing::UP)
   end
   
-  it "computes columns" do
-    t1 = Facing::UP.get_wall([3, 3])
+  it "computes walls" do
+    t1 = Facing::UP.get_wall([3, 4])
     
-    4.upto(6) do |y|
+    5.upto(6) do |y|
       0.upto(6) do |x|
         t1.should include [x, y]
       end
     end
+    
+    0.upto(6) {|x| t1.should include [x, 0]}
+    
+    t1.include?([3, 1]).should be_false
     
     t2 = Facing::LEFT.get_wall([3, 3])
     
