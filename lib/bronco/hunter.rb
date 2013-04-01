@@ -39,7 +39,7 @@ class Hunter
     @facing = @facing.turn if @last_action == :turn
     @senses_glitter = senses.glitter
     @senses_bump = senses.bump
-    @has_gold = @last_action == :shoot
+    @has_gold = @last_action == :grab
     @wumpus_killed = true if senses.scream
     
     detect_wumpus(senses)
