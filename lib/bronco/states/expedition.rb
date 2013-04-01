@@ -6,6 +6,7 @@ class Expedition
   def initialize(target)
     @target = target
     @path = nil
+    @first_turn = true
     @logger = Logger.new(STDOUT)
     @logger.level = Logger::DEBUG
     @logger.formatter = proc do |severity, datetime, progname, msg|
@@ -14,9 +15,15 @@ class Expedition
   end
   
   def advance(agent)
-    return transition(agent) if agent.location == target || agent.senses_bump?
+    if agent.location == target
+      @logger.debug("I have reached the target")
+      return transition(agent) 
+    end
     
-    @path = plot_path(agent) unless @path
+    if agent.senses_bump? && !@first_turn
+      @logger.debug("I have hit an obstacle")
+      return transition(agent)
+    end
     
     unless @path
       @path = plot_path(agent)
@@ -24,6 +31,8 @@ class Expedition
     end
     
     raise Exception.new("Computed empty path from #{agent.location.inspect} to #{target.inspect}") if @path.nil? || @path.empty?
+    
+    @first_turn = false
     
     return @path.pop
   end
