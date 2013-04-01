@@ -15,8 +15,11 @@ class Exploration
     return :grab if agent.senses_glitter?
     return :climb if agent.has_gold? && agent.on_start?
     
-    return transition(Expedition.new, agent) if agent.has_gold?
-      
+    if agent.has_gold?
+      @logger.debug("I've got the gold, so I'm getting the hell outta here")
+      return transition(Expedition.new(agent.start_location), agent) 
+    end    
+  
     safe_square = agent.get_safe_square
     if safe_square
       @logger.debug("I will expedition to the safe square #{safe_square.inspect}")

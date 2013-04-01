@@ -10,6 +10,20 @@ describe Exploration do
     e = Exploration.new
     e.advance(h).should eq(:grab)
   end
+    
+  it "expeditions to the start if it has the gold" do
+    h = double(:senses_glitter? => false, 
+               :has_gold? => true, 
+               :on_start? => false,
+               :start_location => [3, 3],
+               :location => [2, 3],
+               :senses_bump? => true,
+               :facing => Facing::UP,
+               :visited_square_location? => true)
+    h.should_receive(:state=).with(kind_of(Expedition))
+    e = Exploration.new
+    e.advance(h)
+  end
   
   it "climbs if agent has the gold and is on start" do
     h = double
