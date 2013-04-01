@@ -6,7 +6,7 @@ require 'bronco/facing'
 describe Exploration do
   it "grabs the gold if the agent has sensed it" do
     h = double
-    h.stub(:senses_glitter?).and_return(true)
+    h.stub(:senses_glitter? => true, :has_gold? => false, :on_start? => false)
     e = Exploration.new
     e.advance(h).should eq(:grab)
   end
@@ -67,6 +67,7 @@ describe Exploration do
   it "goes to kill the Wumpus" do
     h = double(:senses_glitter? => false,
                :has_gold? => false,
+               :on_start? => false,
                :get_safe_square => nil,
                :wumpus_found? => true,
                :wumpus_killed? => false,
