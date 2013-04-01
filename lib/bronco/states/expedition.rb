@@ -35,10 +35,10 @@ class Expedition
     puts "", "I'ma goin to #{target.inspect}"
     
     until fringe.empty?
-      puts "", "The fringe is: #{fringe.inspect}"
+#      puts "", "The fringe is: #{fringe.inspect}"
       fringe.sort!.reverse!
       n = fringe.pop
-      puts "Selecting #{n} for expansion"
+#      puts "Selecting #{n} for expansion"
       if n.finished?
         puts "Target can be reached with: #{get_path_actions(n.path)} (remember this is a stack, so action order is reversed)" if n.finished?
         return get_path_actions(n.path) if n.finished?
