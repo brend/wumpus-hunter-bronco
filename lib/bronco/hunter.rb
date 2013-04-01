@@ -38,7 +38,6 @@ class Hunter
     handle_movement(senses)
     @facing = @facing.turn if @last_action == :turn
     @senses_glitter = senses.glitter
-    puts "", "***** senses.bump = #{senses.bump}"
     @senses_bump = senses.bump
     @has_gold = @last_action == :shoot
     @wumpus_killed = true if senses.scream
