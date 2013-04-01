@@ -228,4 +228,13 @@ describe Hunter do
     h.visited_square_location?([1, 2]).should be_true
     h.visited_square_location?([2, 4]).should be_false
   end
+  
+  it "knows which locations are neighbors of visited locations" do
+    h = Hunter.new
+    h.neighbors_visited_location?([2, 3]).should be_false
+    h.neighbors_visited_location?([1, 3]).should be_false
+    h.get_square(3, 3).visit
+    h.neighbors_visited_location?([2, 3]).should be_true
+    h.neighbors_visited_location?([1, 3]).should be_false
+  end
 end

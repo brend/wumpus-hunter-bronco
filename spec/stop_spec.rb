@@ -7,7 +7,7 @@ describe Stop do
   end
   
   it "turns and forwards" do
-    h = double(:visited_square_location? => true)
+    h = double(:visited_square_location? => true, :valid_location? => true)
     l = [1, 2]
     lf = double
     f = double
@@ -23,7 +23,7 @@ describe Stop do
   end
   
   it "doesn't forward if unvisited" do
-    h = double
+    h = double(:valid_location? => true)
     h.stub!(:visited_square_location?) {|x, y| x == 6 && y == 5}
     t = [6, 5]
     l = [1, 1]
@@ -75,5 +75,16 @@ describe Stop do
     (e == e).should be_true
     (e == x).should be_false
     (e == y).should be_false
+  end
+  
+  it "doesn't overstep the map's bounds" do
+    h = double
+    h.stub!(:valid_location?) {|x, y| (0...7).include?(x) && (0...7).include?(y)}
+    h.should_not_receive(:visited_square_location?)
+    t = [3, 4]
+    l = [2, 6]
+    f = Facing::UP
+    s = Stop.new(h, t, l, f)
+    s.successors.length.should eq 1
   end
 end

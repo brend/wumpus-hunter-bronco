@@ -12,6 +12,8 @@ class Exploration
   end
   
   def advance(agent)
+    @logger.debug("agent.has_gold? = #{agent.has_gold?}, agent.on_start? = #{agent.on_start?}")
+    
     return :grab if agent.senses_glitter?
     return :climb if agent.has_gold? && agent.on_start?
     
@@ -33,7 +35,7 @@ class Exploration
   
     dangerous_square = agent.get_dangerous_square
     if dangerous_square
-      @logger.debug("I will expedition to the dangerous square #{dangerous_square.inspect}")
+      @logger.debug("I will expedition to the dangerous square #{agent.get_square(*dangerous_square).inspect}")
       return transition(Expedition.new(dangerous_square), agent) 
     end
     

@@ -25,21 +25,21 @@ class Hunter
   end
   
   def make_move(senses)
-    @logger.debug("I am on #{@location.inspect} and I feel #{senses.inspect}")
     update_world(senses)
+    @logger.debug("I am on #{@location.inspect} and I feel #{senses.inspect}. My last action was #{@last_action}")
+    puts ">>> Safe squares: #{get_all_safe_squares}"
     @last_action = state.advance(self)
   end
   
   def update_world(senses)
+    handle_movement(senses)
     xs = get_square(*location)
     xs.visit
     
-    # TODO Walls here
-    handle_movement(senses)
     @facing = @facing.turn if @last_action == :turn
     @senses_glitter = senses.glitter
     @senses_bump = senses.bump
-    @has_gold = @last_action == :grab
+    @has_gold = true if @last_action == :grab
     @wumpus_killed = true if senses.scream
     
     detect_wumpus(senses)
@@ -96,6 +96,21 @@ class Hunter
     (x == a && (y - b).abs == 1) || (y == b && (x - a).abs == 1)
   end
   
+  def visited_locations
+    result = []
+    0.upto(6) do |y|
+      0.upto(6) do |x|
+        result << [x, y] if get_square(x, y).visited?
+      end
+    end
+    result
+  end
+  
+  def neighbors_visited_location?(l)
+    x, y = l
+    visited_locations.any? {|vx, vy| (vx == x && (vy - y).abs == 1) || ((vx - x).abs == 1 && vy == y)}
+  end
+  
   def detect_pit(senses)
     if senses.breeze
       # To be implemented
@@ -125,8 +140,13 @@ class Hunter
     s.walkable
   end
   
+  def valid_location?(l)
+    x, y = l
+    (0...7).include?(x) && (0...7).include?(y)
+  end
+  
   def get_square(x, y)
-    raise ArgumentError.new("Bounds!") if x < 0 || x >= 7 || y < 0 || y >= 7
+    raise ArgumentError.new("Bounds!") unless valid_location?([x, y])
     @world[x + 7 * y]
   end
   
@@ -145,7 +165,10 @@ class Hunter
     0.upto(6) do |y|
       0.upto(6) do |x|
         s = get_square(x, y)
-        result << [x, y] if neighbors?(location, [x, y]) && s.dangerous? && s.walkable && !s.visited?
+        result << [x, y] if neighbors_visited_location?([x, y]) &&
+                            s.dangerous? && 
+                            s.walkable && 
+                            !s.visited?
       end
     end
     result
@@ -156,7 +179,10 @@ class Hunter
     0.upto(6) do |y|
       0.upto(6) do |x|
         s = get_square(x, y)
-        result << [x, y] if neighbors?(location, [x, y]) && s.safe? && s.walkable && !s.visited?
+        result << [x, y] if neighbors_visited_location?([x, y]) && 
+                            s.safe? && 
+                            s.walkable && 
+                            !s.visited?
       end
     end
     result

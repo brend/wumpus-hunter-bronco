@@ -19,7 +19,8 @@ describe Exploration do
                :location => [2, 3],
                :senses_bump? => true,
                :facing => Facing::UP,
-               :visited_square_location? => true)
+               :visited_square_location? => true,
+               :valid_location? => true)
     h.should_receive(:state=).with(kind_of(Expedition))
     e = Exploration.new
     e.advance(h)
@@ -45,7 +46,8 @@ describe Exploration do
                :location => [0, 2],
                :senses_bump? => false,
                :facing => Facing::UP,
-               :visited_square_location? => true)
+               :visited_square_location? => true,
+               :valid_location? => true)
     h.should_receive(:state=).with(kind_of(Expedition))
     e = Exploration.new
     e.advance(h)

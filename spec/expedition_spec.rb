@@ -25,14 +25,15 @@ describe Expedition do
     h = double(:location => [3, 3], 
                :facing => Facing::UP, 
                :dangerous_square? => false,
-               :visited_square_location? => true)
+               :visited_square_location? => true,
+               :valid_location? => true)
     
     e.plot_path(h).should eq([:turn, :turn, :forward].reverse)
   end
   
   it "can plot complicated, but short paths" do
     e = Expedition.new([0, 0])
-    h = double(:dangerous_square? => false)
+    h = double(:dangerous_square? => false, :valid_location? => true)
     
     h.stub!(:visited_square_location?) do |x, y|
       unwalkables = [[1, 2], [1, 3], [1, 4], [3, 2], [4, 3]]
@@ -51,7 +52,7 @@ describe Expedition do
   
   it "cancels if the hunter bumps her head" do
     e = Expedition.new([0, 0])
-    h = double(:dangerous_square? => false)
+    h = double(:dangerous_square? => false, :valid_location? => true)
     
     h.stub!(:visited_square_location?) do |x, y|
       unwalkables = [[1, 2], [1, 3], [1, 4], [3, 2], [4, 3]]
@@ -80,7 +81,7 @@ describe Expedition do
   
   it "can find a path to an unvisited square" do
     e = Expedition.new([3, 2])
-    h = double(:walkable_square_location? => true)
+    h = double(:walkable_square_location? => true, :valid_location? => true)
     l = [3, 3]
     f = Facing::UP
     h.stub!(:location) {l}
