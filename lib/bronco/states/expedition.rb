@@ -15,6 +15,8 @@ class Expedition
   end
   
   def advance(agent)
+    @logger.debug("I will find a way to #{target.inspect}") if @first_turn
+    
     if agent.location == target
       @logger.debug("I have reached the target")
       return transition(agent) 
@@ -49,7 +51,7 @@ class Expedition
     fringe = [Stop.new(agent, target, location, facing)]
     visited = []
     
-    puts "", "I'ma goin to #{target.inspect}"
+#    puts "", "I'ma goin to #{target.inspect}"
     
     until fringe.empty?
 #      puts "", "The fringe is: #{fringe.inspect}"
