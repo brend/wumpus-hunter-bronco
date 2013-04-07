@@ -27,7 +27,6 @@ class Hunter
   def make_move(senses)
     update_world(senses)
     @logger.debug("I am on #{@location.inspect} and I feel #{senses.inspect}. My last action was #{@last_action}")
-    puts ">>> Safe squares: #{get_all_safe_squares}"
     @last_action = state.advance(self)
   end
   
