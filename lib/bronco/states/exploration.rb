@@ -1,11 +1,14 @@
 require 'logger'
 require 'bronco/states/expedition'
 require 'bronco/states/extermination'
+require 'bronco/logging'
 
 class Exploration
+  include Logging
+  
   def initialize
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG
+    @logger.level = global_log_level
     @logger.formatter = proc do |severity, datetime, progname, msg|
       "Exploration: #{msg}\n"
     end

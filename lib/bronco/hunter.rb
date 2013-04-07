@@ -1,9 +1,12 @@
 require 'bronco/states/exploration'
 require 'bronco/square'
 require 'bronco/facing'
+require 'bronco/logging'
 require 'set'
 
 class Hunter
+  include Logging
+  
   attr_accessor :state, :world, :location, :facing, :last_action
   attr_reader :wumpus_location
   
@@ -18,7 +21,7 @@ class Hunter
     @wumpus_location = nil
     @facing = Facing::UP
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG
+    @logger.level = global_log_level
     @logger.formatter = proc do |severity, datetime, progname, msg|
       "Hunter Bronco: #{msg}\n"
     end

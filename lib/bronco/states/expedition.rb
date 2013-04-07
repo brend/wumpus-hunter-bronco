@@ -1,6 +1,9 @@
 require 'bronco/stop'
+require 'bronco/logging'
 
 class Expedition
+  include Logging
+  
   attr_accessor :target, :return_state
   
   def initialize(target)
@@ -8,7 +11,7 @@ class Expedition
     @path = nil
     @first_turn = true
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG
+    @logger.level = global_log_level
     @logger.formatter = proc do |severity, datetime, progname, msg|
       "Expedition: #{msg}\n"
     end

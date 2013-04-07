@@ -1,11 +1,14 @@
 require 'bronco/states/expedition'
+require 'bronco/logging'
 
 class Extermination
+  include Logging
+  
   attr_accessor :return_state
   
   def initialize
     @logger = Logger.new(STDOUT)
-    @logger.level = Logger::DEBUG
+    @logger.level = global_log_level
     @logger.formatter = proc do |severity, datetime, progname, msg|
       "Extermination: #{msg}\n"
     end
