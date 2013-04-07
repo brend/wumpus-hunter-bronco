@@ -1,9 +1,8 @@
 TODO
 ====
 
- - Was passiert, wenn ein "dangerous"-Feld außerhalb des tatsächlichen
-   Spielfeldes gewählt wurde: Der Jäger versucht hinzulaufen, erhält BUMP -
-   kann er die Expedition abbrechen?
+  - Order dangerous squares according to "dangerousness", promximity
+  - Order safe squares according to proximity
 
 DONE
 ====
@@ -13,3 +12,7 @@ DONE
  - Wenn auf einem Feld weder Gestank noch Brise wahrgenommen werden, so müssen
    folglich die Nachbarfelder sicher sein
  - Angeforderte Felder müssen an besuchte grenzen
+ - Was passiert, wenn ein "dangerous"-Feld außerhalb des tatsächlichen
+   Spielfeldes gewählt wurde: Der Jäger versucht hinzulaufen, erhält BUMP -
+   kann er die Expedition abbrechen?
+   
