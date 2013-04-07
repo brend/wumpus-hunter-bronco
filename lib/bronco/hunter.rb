@@ -162,6 +162,18 @@ class Hunter
     get_all_dangerous_squares.first
   end
   
+  def compare_dangerousness(l1, l2)
+    s1, s2 = get_square(*l1), get_square(*l2)
+    d = s1.dangerousness <=> s2.dangerousness
+    return d unless d == 0
+    proximity(l1) <=> proximity(l2)
+  end
+  
+  def proximity(l)
+    x, y = l
+    (x - location.first).abs + (y - location.last).abs
+  end
+  
   def get_all_dangerous_squares
     result = []
     0.upto(6) do |y|
@@ -173,7 +185,7 @@ class Hunter
                             !s.visited?
       end
     end
-    result
+    result.sort_by {|l| [get_square(*l).dangerousness, proximity(l)]}
   end
 
   def get_all_safe_squares

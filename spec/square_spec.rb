@@ -67,4 +67,26 @@ describe Square do
     s.pit.should eq(:no)
     s.walkable.should be_false
   end
+  
+  it "has a dangerousness dependent on the number of perils" do
+    s = Square.new
+    # Wumpus possible, Pit possible
+    s.dangerousness.should eq 2
+    s.wumpus = :no
+    # Wumpus impossible, Pit possible
+    s.dangerousness.should eq 1
+    # Wumpus impossible, Pit impossible
+    s.pit = :no
+    s.dangerousness.should eq 0
+    # Wumpus possible, Pit impossible
+    s.wumpus = :maybe
+    s.dangerousness.should eq 1
+    # Wumpus certain
+    s.wumpus = :yes
+    s.dangerousness.should eq 9001
+    # Pit certain
+    s.wumpus = :no
+    s.pit = :yes
+    s.dangerousness.should eq 9001
+  end
 end

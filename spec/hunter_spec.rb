@@ -104,6 +104,27 @@ describe Hunter do
     Set.new(ys).should eq(Set.new([[3, 2], [2, 3], [4, 3]]))
   end
   
+  it "sorts dangerous squares by danger level, from safest to most perilous" do
+    h = Hunter.new
+    state = double(:advance => nil)
+    h.state = state
+    senses = double(:glitter => false, :stench => true, :breeze => true, :bump => false, :scream => false)
+    h.make_move(senses)
+    
+    h.location = [4, 3]
+    senses = double(:glitter => false, :stench => false, :breeze => true, :bump => false, :scream => false)
+    h.make_move(senses)    
+    
+    h.location = [5, 2]
+        
+    xs = h.get_all_dangerous_squares
+    xs.length.should eq 6
+    Set.new(xs[0, 3]).should eq(Set.new([[5, 3], [4, 2], [4, 4]]))
+    xs[2].should eq [4, 4]
+    Set.new(xs[3, 3]).should eq(Set.new([[3, 2], [3, 4], [2, 3]]))
+    xs[3].should eq [3, 2]
+  end
+  
   it "gets you only walkable safe squares" do
     h = Hunter.new
     state = double(:advance => nil)

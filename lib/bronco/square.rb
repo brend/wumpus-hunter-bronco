@@ -32,4 +32,20 @@ class Square
     @walkable = false
     @pit = @wumpus = :no
   end
+  
+  def dangerousness
+    return 9001 if pit == :yes || wumpus == :yes
+    d = 0
+    d += 1 if wumpus == :maybe
+    d += 1 if pit == :maybe
+    d
+  end
+  
+  def inspect
+    "{wu=#{wumpus},pi=#{pit},go=#{gold},wa=#{walkable},vi=#{visited?}}"
+  end
+  
+  def to_s
+    inspect
+  end
 end
