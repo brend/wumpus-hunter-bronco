@@ -199,7 +199,7 @@ class Hunter
                             !s.visited?
       end
     end
-    result
+    result.sort_by {|l| proximity(l)}
   end
   
   def get_safe_square
